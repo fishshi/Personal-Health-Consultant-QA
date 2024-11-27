@@ -96,19 +96,7 @@ export const useAccessStore = createPersistStore(
   }),
   {
     name: StoreKey.Access,
-    version: 2,
-    migrate(persistedState, version) {
-      if (version < 2) {
-        const state = persistedState as {
-          token: string;
-          openaiApiKey: string;
-          azureApiVersion: string;
-          googleApiKey: string;
-        };
-        state.openaiApiKey = state.token;
-        state.azureApiVersion = "2023-08-01-preview";
-      }
-
+    migrate(persistedState) {
       return persistedState as any;
     },
   },

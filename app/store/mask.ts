@@ -1,4 +1,3 @@
-import { BUILTIN_MASKS } from "../masks";
 import { getLang, Lang } from "../locales";
 import { DEFAULT_TOPIC, ChatMessage } from "./chat";
 import { ModelConfig, useAppConfig } from "./config";
@@ -89,16 +88,7 @@ export const useMaskStore = createPersistStore(
       );
       const config = useAppConfig.getState();
       if (config.hideBuiltinMasks) return userMasks;
-      const buildinMasks = BUILTIN_MASKS.map(
-        (m) =>
-          ({
-            ...m,
-            modelConfig: {
-              ...config.modelConfig,
-              ...m.modelConfig,
-            },
-          }) as Mask,
-      );
+      const buildinMasks : Mask[] = [];
       return userMasks.concat(buildinMasks);
     },
     search(text: string) {
@@ -112,23 +102,9 @@ export const useMaskStore = createPersistStore(
   }),
   {
     name: StoreKey.Mask,
-    version: 3.1,
 
-    migrate(state, version) {
+    migrate(state) {
       const newState = JSON.parse(JSON.stringify(state)) as MaskState;
-
-      // migrate mask id to nanoid
-      if (version < 3) {
-        Object.values(newState.masks).forEach((m) => (m.id = nanoid()));
-      }
-
-      if (version < 3.1) {
-        const updatedMasks: Record<string, Mask> = {};
-        Object.values(newState.masks).forEach((m) => {
-          updatedMasks[m.id] = m;
-        });
-        newState.masks = updatedMasks;
-      }
 
       return newState as any;
     },

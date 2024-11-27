@@ -810,6 +810,10 @@ function _Chat() {
   // only search prompts when user input is short
   const SEARCH_TEXT_LIMIT = 30;
   const onInput = (text: string) => {
+    if (text == ":\n" || text == "：\n") {
+      setUserInput("")
+      return;
+    }
     setUserInput(text);
     const n = text.trim().length;
 
