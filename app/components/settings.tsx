@@ -37,7 +37,7 @@ import Locale, {
   getLang,
 } from "../locales";
 import { copyToClipboard } from "../utils";
-import { OPENAI_BASE_URL, Path } from "../constant";
+import { Path } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
 import { InputRange } from "./input-range";
@@ -256,31 +256,15 @@ export function Settings() {
   }
 
   const accessStore = useAccessStore();
-  const shouldHideBalanceQuery = useMemo(() => {
-    const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
-
-    return accessStore.hideBalanceQuery || isOpenAiUrl;
-  }, [accessStore.hideBalanceQuery, accessStore.openaiUrl]);
-
-  function checkUsage(force = false) {
-    if (shouldHideBalanceQuery) {
-      return;
-    }
-
-    updateStore.updateUsage(force);
-  }
 
   const promptStore = usePromptStore();
   const builtinCount = SearchService.count.builtin;
   const customCount = promptStore.getUserPrompts().length ?? 0;
   const [shouldShowPromptModal, setShowPromptModal] = useState(false);
 
-  const showUsage = accessStore.isAuthorized();
   useEffect(() => {
     // checks per minutes
     checkUpdate();
-    showUsage && checkUsage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -479,39 +463,6 @@ export function Settings() {
                 updateConfig(
                   (config) =>
                     (config.sendPreviewBubble = e.currentTarget.checked),
-                )
-              }
-            ></input>
-          </ListItem>
-
-          <ListItem
-            title={Locale.Mask.Config.Artifacts.Title}
-            subTitle={Locale.Mask.Config.Artifacts.SubTitle}
-          >
-            <input
-              aria-label={Locale.Mask.Config.Artifacts.Title}
-              type="checkbox"
-              checked={config.enableArtifacts}
-              onChange={(e) =>
-                updateConfig(
-                  (config) =>
-                    (config.enableArtifacts = e.currentTarget.checked),
-                )
-              }
-            ></input>
-          </ListItem>
-          <ListItem
-            title={Locale.Mask.Config.CodeFold.Title}
-            subTitle={Locale.Mask.Config.CodeFold.SubTitle}
-          >
-            <input
-              aria-label={Locale.Mask.Config.CodeFold.Title}
-              type="checkbox"
-              checked={config.enableCodeFold}
-              data-testid="enable-code-fold-checkbox"
-              onChange={(e) =>
-                updateConfig(
-                  (config) => (config.enableCodeFold = e.currentTarget.checked),
                 )
               }
             ></input>

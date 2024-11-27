@@ -253,16 +253,6 @@ const tw = {
       SubTitle: "當未壓縮的歷史訊息超過該值時，將進行壓縮",
     },
 
-    Usage: {
-      Title: "帳戶餘額",
-      SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，訂閱總額 $${total}`;
-      },
-      IsChecking: "正在檢查…",
-      Check: "重新檢查",
-      NoAccess: "輸入 API Key 檢視餘額",
-    },
-
     Model: "模型 (model)",
     CompressModel: {
       Title: "壓縮模型",

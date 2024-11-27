@@ -268,16 +268,6 @@ const en: LocaleType = {
         "Will compress if uncompressed messages length exceeds the value",
     },
 
-    Usage: {
-      Title: "Account Balance",
-      SubTitle(used: any, total: any) {
-        return `Used this month $${used}, subscription $${total}`;
-      },
-      IsChecking: "Checking...",
-      Check: "Check",
-      NoAccess: "Enter API Key to check balance",
-    },
-
     Model: "Model",
     CompressModel: {
       Title: "Summary Model",

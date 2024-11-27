@@ -74,10 +74,6 @@ export enum ModelProvider {
 
 export const OpenaiPath = {
   ChatPath: "v1/chat/completions",
-  SpeechPath: "v1/audio/speech",
-  ImagePath: "v1/images/generations",
-  UsagePath: "dashboard/billing/usage",
-  SubsPath: "dashboard/billing/subscription",
   ListModelPath: "v1/models",
 };
 

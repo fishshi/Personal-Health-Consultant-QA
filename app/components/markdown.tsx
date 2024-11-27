@@ -100,8 +100,7 @@ export function PreCode(props: { children: any }) {
   }, 600);
 
   const config = useAppConfig();
-  const enableArtifacts =
-    session.mask?.enableArtifacts !== false && config.enableArtifacts;
+  const enableArtifacts = config.enableArtifacts;
 
   //Wrap the paragraph for plain-text
   useEffect(() => {
@@ -174,11 +173,8 @@ export function PreCode(props: { children: any }) {
 }
 
 function CustomCode(props: { children: any; className?: string }) {
-  const chatStore = useChatStore();
-  const session = chatStore.currentSession();
   const config = useAppConfig();
-  const enableCodeFold =
-    session.mask?.enableCodeFold !== false && config.enableCodeFold;
+  const enableCodeFold = config.enableCodeFold;
 
   const ref = useRef<HTMLPreElement>(null);
   const [collapsed, setCollapsed] = useState(true);

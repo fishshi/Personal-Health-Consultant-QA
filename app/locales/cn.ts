@@ -264,16 +264,6 @@ const cn = {
       SubTitle: "当未压缩的历史消息超过该值时，将进行压缩",
     },
 
-    Usage: {
-      Title: "余额查询",
-      SubTitle(used: any, total: any) {
-        return `本月已使用 $${used}，订阅总额 $${total}`;
-      },
-      IsChecking: "正在检查…",
-      Check: "重新检查",
-      NoAccess: "输入 API Key 或访问密码查看余额",
-    },
-
     Model: "模型 (model)",
     CompressModel: {
       Title: "对话摘要模型",
