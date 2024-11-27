@@ -28,8 +28,6 @@ const tw = {
       Copy: "複製",
       Stop: "停止",
       Retry: "重試",
-      Pin: "固定",
-      PinToastContent: "已將 1 條對話固定至預設提示詞",
       PinToastAction: "檢視",
       Delete: "刪除",
       Edit: "編輯",
@@ -73,6 +71,7 @@ const tw = {
       SaveAs: "另存新檔",
     },
     IsContext: "預設提示詞",
+    IsPreview: "預覽訊息",
     ShortcutKey: {
       Title: "鍵盤快捷方式",
       newChat: "開啟新聊天",
@@ -83,12 +82,11 @@ const tw = {
     },
   },
   Export: {
-    Title: "將聊天記錄匯出為 Markdown",
+    Title: "匯出諮詢記錄",
     Copy: "複製全部",
     Download: "下載檔案",
-    Share: "分享到 ShareGPT",
     MessageFromYou: "來自您的訊息",
-    MessageFromChatGPT: "來自 ChatGPT 的訊息",
+    MessageFromBot: "健康顧問",
     Format: {
       Title: "匯出格式",
       SubTitle: "可以匯出 Markdown 文字檔或者 PNG 圖片",
@@ -319,7 +317,6 @@ const tw = {
     Clear: "上下文已清除",
     Revert: "恢復上下文",
   },
-  Plugin: { Name: "外掛" },
   Mask: {
     Name: "角色範本",
     Page: {

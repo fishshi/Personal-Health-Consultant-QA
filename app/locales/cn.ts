@@ -28,16 +28,12 @@ const cn = {
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
-      Pin: "固定",
-      PinToastContent: "已将 1 条对话固定至预设提示词",
       PinToastAction: "查看",
       Delete: "删除",
       Edit: "编辑",
       FullScreen: "全屏",
       RefreshTitle: "刷新标题",
       RefreshToast: "已发送刷新标题请求",
-      Speech: "朗读",
-      StopSpeech: "停止",
     },
     Commands: {
       new: "新建聊天",
@@ -69,7 +65,7 @@ const cn = {
       if (submitKey === String(SubmitKey.Enter)) {
         inputHints += "，Shift + Enter 换行";
       }
-      return inputHints + "，/ 触发补全，: 触发命令";
+      return inputHints + "，/ 触发提问模板，: 触发命令";
     },
     Send: "发送",
     StartSpeak: "说话",
@@ -79,6 +75,7 @@ const cn = {
       SaveAs: "存为面具",
     },
     IsContext: "预设提示词",
+    IsPreview: "预览消息",
     ShortcutKey: {
       Title: "键盘快捷方式",
       newChat: "打开新聊天",
@@ -89,12 +86,11 @@ const cn = {
     },
   },
   Export: {
-    Title: "分享聊天记录",
+    Title: "导出咨询记录",
     Copy: "全部复制",
     Download: "下载文件",
-    Share: "分享到 ShareGPT",
     MessageFromYou: "用户",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromBot: "健康顾问",
     Format: {
       Title: "导出格式",
       SubTitle: "可以导出 Markdown 文本或者 PNG 图片",
@@ -243,8 +239,8 @@ const cn = {
     },
     Prompt: {
       Disable: {
-        Title: "禁用提示词自动补全",
-        SubTitle: "在输入框开头输入 / 即可触发自动补全",
+        Title: "禁用提问模板",
+        SubTitle: "在输入框开头输入 / 即可触发提问模板",
       },
       List: "自定义提示词列表",
       ListCount: (builtin: number, custom: number) =>
@@ -306,7 +302,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗",
+    BotHello: "您好，我是您的私人健康顾问，请问有什么能帮您的？",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
@@ -347,46 +343,6 @@ const cn = {
     },
     Item: {
       View: "查看",
-    },
-  },
-  Plugin: {
-    Name: "插件",
-    Page: {
-      Title: "插件",
-      SubTitle: (count: number) => `${count} 个插件`,
-      Search: "搜索插件",
-      Create: "新建",
-      Find: "您可以在Github上找到优秀的插件：",
-    },
-    Item: {
-      Info: (count: number) => `${count} 方法`,
-      View: "查看",
-      Edit: "编辑",
-      Delete: "删除",
-      DeleteConfirm: "确认删除？",
-    },
-    Auth: {
-      None: "不需要授权",
-      Basic: "Basic",
-      Bearer: "Bearer",
-      Custom: "自定义",
-      CustomHeader: "自定义参数名称",
-      Token: "Token",
-      Proxy: "使用代理",
-      ProxyDescription: "使用代理解决 CORS 错误",
-      Location: "位置",
-      LocationHeader: "Header",
-      LocationQuery: "Query",
-      LocationBody: "Body",
-    },
-    EditModal: {
-      Title: (readonly: boolean) => `编辑插件 ${readonly ? "（只读）" : ""}`,
-      Download: "下载",
-      Auth: "授权方式",
-      Content: "OpenAPI Schema",
-      Load: "从网页加载",
-      Method: "方法",
-      Error: "格式错误",
     },
   },
   Mask: {

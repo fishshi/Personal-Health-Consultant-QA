@@ -23,7 +23,6 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import DeleteIcon from "../icons/clear.svg";
-import PinIcon from "../icons/pin.svg";
 import EditIcon from "../icons/rename.svg";
 import ConfirmIcon from "../icons/confirm.svg";
 import CloseIcon from "../icons/close.svg";
@@ -47,7 +46,6 @@ import {
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
-  usePluginStore,
 } from "../store";
 
 import {
@@ -440,9 +438,7 @@ export function ChatActions(props: {
   setShowChatSidePanel: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const config = useAppConfig();
-  const navigate = useNavigate();
   const chatStore = useChatStore();
-  const pluginStore = usePluginStore();
   const session = chatStore.currentSession();
 
   // switch themes
@@ -990,19 +986,6 @@ function _Chat() {
     inputRef.current?.focus();
   };
 
-  const onPinMessage = (message: ChatMessage) => {
-    chatStore.updateTargetSession(session, (session) =>
-      session.mask.context.push(message),
-    );
-
-    showToast(Locale.Chat.Actions.PinToastContent, {
-      text: Locale.Chat.Actions.PinToastAction,
-      onClick: () => {
-        setShowPromptModal(true);
-      },
-    });
-  };
-
   const accessStore = useAccessStore();
 
   const context: RenderMessage[] = useMemo(() => {
@@ -1044,6 +1027,7 @@ function _Chat() {
                 ...createMessage({
                   role: "user",
                   content: userInput,
+                  date: Locale.Chat.IsPreview,
                 }),
                 preview: true,
               },
@@ -1548,11 +1532,6 @@ function _Chat() {
                                       onClick={() => onDelete(message.id ?? i)}
                                     />
 
-                                    <ChatAction
-                                      text={Locale.Chat.Actions.Pin}
-                                      icon={<PinIcon />}
-                                      onClick={() => onPinMessage(message)}
-                                    />
                                     <ChatAction
                                       text={Locale.Chat.Actions.Copy}
                                       icon={<CopyIcon />}

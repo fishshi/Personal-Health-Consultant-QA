@@ -10,8 +10,6 @@ import {
   ChatMessageTool,
   useAccessStore,
   useAppConfig,
-  useChatStore,
-  usePluginStore,
 } from "@/app/store";
 import {
   preProcessImageContent,
@@ -20,7 +18,6 @@ import {
   stream,
 } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-import { DalleSize, DalleQuality, DalleStyle } from "@/app/typing";
 
 import {
   ChatOptions,
@@ -29,7 +26,6 @@ import {
   LLMModel,
   LLMUsage,
   MultimodalContent,
-  SpeechOptions,
 } from "../api";
 import Locale from "../../locales";
 import { getClientConfig } from "@/app/config/client";
@@ -58,16 +54,6 @@ export interface RequestPayload {
   top_p: number;
   max_tokens?: number;
   max_completion_tokens?: number;
-}
-
-export interface DalleRequestPayload {
-  model: string;
-  prompt: string;
-  response_format: "url" | "b64_json";
-  n: number;
-  size: DalleSize;
-  quality: DalleQuality;
-  style: DalleStyle;
 }
 
 export class ChatGPTApi implements LLMApi {
@@ -128,55 +114,16 @@ export class ChatGPTApi implements LLMApi {
     return res.choices?.at(0)?.message?.content ?? res;
   }
 
-  async speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    const requestPayload = {
-      model: options.model,
-      input: options.input,
-      voice: options.voice,
-      response_format: options.response_format,
-      speed: options.speed,
-    };
-
-    console.log("[Request] openai speech payload: ", requestPayload);
-
-    const controller = new AbortController();
-    options.onController?.(controller);
-
-    try {
-      const speechPath = this.path(OpenaiPath.SpeechPath);
-      const speechPayload = {
-        method: "POST",
-        body: JSON.stringify(requestPayload),
-        signal: controller.signal,
-        headers: getHeaders(),
-      };
-
-      // make a fetch request
-      const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
-      );
-
-      const res = await fetch(speechPath, speechPayload);
-      clearTimeout(requestTimeoutId);
-      return await res.arrayBuffer();
-    } catch (e) {
-      console.log("[Request] failed to make a speech request", e);
-      throw e;
-    }
-  }
-
   async chat(options: ChatOptions) {
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
-      ...useChatStore.getState().currentSession().mask.modelConfig,
       ...{
         model: options.config.model,
         providerName: options.config.providerName,
       },
     };
 
-    let requestPayload: RequestPayload | DalleRequestPayload;
+    let requestPayload: RequestPayload;
 
     const isO1 = options.config.model.startsWith("o1");
 
@@ -224,18 +171,13 @@ export class ChatGPTApi implements LLMApi {
       chatPath = this.path(OpenaiPath.ChatPath);
       if (shouldStream) {
         let index = -1;
-        const [tools, funcs] = usePluginStore
-          .getState()
-          .getAsTools(
-            useChatStore.getState().currentSession().mask?.plugin || [],
-          );
         // console.log("getAsTools", tools, funcs);
         stream(
           chatPath,
           requestPayload,
           getHeaders(),
-          tools as any,
-          funcs,
+          [],
+          {},
           controller,
           // parseSSE
           (text: string, runTools: ChatMessageTool[]) => {
@@ -298,7 +240,7 @@ export class ChatGPTApi implements LLMApi {
         // make a fetch request
         const requestTimeoutId = setTimeout(
           () => controller.abort(),
-          isO1 ? REQUEST_TIMEOUT_MS * 4 : REQUEST_TIMEOUT_MS, // dalle3 using b64_json is slow.
+          REQUEST_TIMEOUT_MS
         );
 
         const res = await fetch(chatPath, chatPayload);

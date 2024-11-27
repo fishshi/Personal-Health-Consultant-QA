@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
 import Locale from "./locales";
 import { RequestMessage } from "./client/api";
-import { ServiceProvider } from "./constant";
 // import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
 import { fetch as tauriStreamFetch } from "./utils/stream";
 
@@ -272,10 +271,6 @@ export function isVisionModel(model: string) {
     !excludeKeywords.some((keyword) => model.includes(keyword)) &&
     (visionKeywords.some((keyword) => model.includes(keyword)) || isGpt4Turbo)
   );
-}
-
-export function showPlugins(provider: ServiceProvider, model: string) {
-  return provider == ServiceProvider.OpenAI;
 }
 
 export function fetch(
