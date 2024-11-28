@@ -3,7 +3,9 @@ export const REPO = "PersonalHealthConsultant-QA";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 
-export const OPENAI_BASE_URL = "http://localhost:11434";
+export const YUN_BASE_URL_1 = "http://36.103.203.203:21702";
+
+export const OLLAMA_BASE_URL = "http://localhost:11434";
 
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
@@ -80,7 +82,7 @@ export const OpenaiPath = {
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`;
 
 export const DEFAULT_SYSTEM_TEMPLATE = `
-  You are a personal health consultant. Your aim is to provide the best health services to users.
+  You are MedCu, created by 张远天. You are a helpful medical assistant.
 `;
 
 export const KnowledgeCutOffDate: Record<string, string> = {
@@ -104,11 +106,18 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gemini-pro-vision": "2023-12",
 };
 
-const openaiModels = ["llama3.1"];
+export const ollamaModels = [
+  "llama3.1"
+]
+
+export const yunModels1 = [
+  "./output/merged",
+  "./qwen/Qwen2-1___5B-Instruct/"
+];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
-  ...openaiModels.map((name) => ({
+  ...ollamaModels.concat(yunModels1).map((name) => ({
     name,
     available: true,
     sorted: seq++, // Global sequence sort(index)

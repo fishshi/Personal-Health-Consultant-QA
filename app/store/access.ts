@@ -2,7 +2,7 @@ import {
   ServiceProvider,
   StoreKey,
   ApiPath,
-  OPENAI_BASE_URL,
+  OLLAMA_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -15,7 +15,7 @@ let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const isApp = getClientConfig()?.buildMode === "export";
 
-const DEFAULT_OPENAI_URL = isApp ? OPENAI_BASE_URL : ApiPath.OpenAI;
+const DEFAULT_OPENAI_URL = isApp ? OLLAMA_BASE_URL : ApiPath.OpenAI;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",

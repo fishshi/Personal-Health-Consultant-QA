@@ -1,10 +1,13 @@
 "use client";
 import {
   ApiPath,
-  OPENAI_BASE_URL,
+  OLLAMA_BASE_URL,
   DEFAULT_MODELS,
   OpenaiPath,
   REQUEST_TIMEOUT_MS,
+  YUN_BASE_URL_1,
+  ollamaModels,
+  yunModels1,
 } from "@/app/constant";
 import {
   ChatMessageTool,
@@ -26,7 +29,6 @@ import {
   LLMModel,
   MultimodalContent,
 } from "../api";
-import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
 import { fetch } from "@/app/utils/stream";
 
@@ -67,9 +69,11 @@ export class ChatGPTApi implements LLMApi {
     }
 
     if (baseUrl.length === 0) {
-      const isApp = !!getClientConfig()?.isApp;
-      const apiPath = ApiPath.OpenAI;
-      baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
+      let model = useAppConfig.getState().modelConfig.model;
+      if (ollamaModels.includes(model))
+        baseUrl = OLLAMA_BASE_URL;
+      else if (yunModels1.includes(model))
+        baseUrl = YUN_BASE_URL_1;
     }
 
     if (baseUrl.endsWith("/")) {

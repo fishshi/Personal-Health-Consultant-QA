@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
-import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
+import { OLLAMA_BASE_URL, ServiceProvider } from "../constant";
 import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
 import { isModelAvailableInServer } from "../utils/model";
 
@@ -15,7 +15,7 @@ export async function requestOpenai(req: NextRequest) {
 
   let path = `${req.nextUrl.pathname}`.replaceAll("/api/openai/", "");
 
-  let baseUrl = serverConfig.baseUrl || OPENAI_BASE_URL;
+  let baseUrl = OLLAMA_BASE_URL;
 
   if (baseUrl.endsWith("/")) {
     baseUrl = baseUrl.slice(0, -1);
