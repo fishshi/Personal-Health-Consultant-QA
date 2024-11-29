@@ -5,12 +5,16 @@ export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 
 export const OLLAMA_BASE_URL = "http://localhost:11434";
 export const YUN_BASE_URL_1 = "http://36.103.203.203:21702";
+export const YUN_BASE_URL_2 = "http://";
 
 export const ollamaModels : string[] = [
   "llama3.1"
 ]
 
 export const yunModels1 : string[] = [
+]
+
+export const yunModels2 : string[] = [
 ]
 
 export const KnowledgeCutOffDate: Record<string, string> = {
@@ -82,7 +86,7 @@ export const OpenaiPath = {
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
-  ...ollamaModels.concat(yunModels1).map((name) => ({
+  ...ollamaModels.concat(yunModels1).concat(yunModels2).map((name) => ({
     name,
     available: true,
     sorted: seq++, // Global sequence sort(index)

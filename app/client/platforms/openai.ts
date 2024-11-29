@@ -8,6 +8,8 @@ import {
   YUN_BASE_URL_1,
   ollamaModels,
   yunModels1,
+  yunModels2,
+  YUN_BASE_URL_2,
 } from "@/app/constant";
 import {
   ChatMessageTool,
@@ -74,6 +76,8 @@ export class ChatGPTApi implements LLMApi {
         baseUrl = OLLAMA_BASE_URL;
       else if (yunModels1.includes(model))
         baseUrl = YUN_BASE_URL_1;
+      else if (yunModels2.includes(model))
+        baseUrl = YUN_BASE_URL_2;
     }
 
     if (baseUrl.endsWith("/")) {
