@@ -74,7 +74,7 @@ const cn = {
       Reset: "清除记忆",
       SaveAs: "存为面具",
     },
-    IsContext: "预设提示词",
+    IsContext: "预设问候语",
     IsPreview: "预览消息",
     ShortcutKey: {
       Title: "键盘快捷方式",
