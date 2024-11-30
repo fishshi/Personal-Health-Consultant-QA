@@ -5,7 +5,6 @@ import { IconButton } from "./button";
 import styles from "./mask.module.scss";
 
 import ClearIcon from "../icons/clear.svg";
-import ConfirmIcon from "../icons/confirm.svg";
 
 import Locale from "../locales";
 import { Path } from "../constant";
@@ -14,21 +13,74 @@ import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { Diagnosis, useDiagnosisList } from "../store/diagnosis-list";
-import { Modal } from "./ui-lib";
+import { Modal, showImageModal, showToast } from "./ui-lib";
+import { downloadAs, useMobileScreen } from "../utils";
+import { toJpeg } from "html-to-image";
+import { getClientConfig } from "../config/client";
 
 export const DiagnosisList = () => {
   const navigate = useNavigate();
+  const isMobile = useMobileScreen();
+  const isApp = getClientConfig()?.isApp;
 
   const diagnosisList = useDiagnosisList().diagnosisList;
   const rmDiagnosis = useDiagnosisList().removeDiagnosis;
 
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+
   const [searchResults, setSearchResults] = useState<Diagnosis[]>([]);
+
   const [showDetail, setShowDetail] = useState(false);
-  const [detailId, setDetailId] = useState<number>(0);
+  const [detailDiagnosis, setDetailDiagnosis] = useState<Diagnosis | null>(null);
+
+  const downLoadAsJpeg = async (dom: HTMLDivElement) => {
+    try {
+      const blob = await toJpeg(dom, {backgroundColor: "#fff"});
+      if (!blob) return;
+      
+      if (isMobile || (isApp && window.__TAURI__)) {
+        if (isApp && window.__TAURI__) {
+          const result = await window.__TAURI__.dialog.save({
+            defaultPath: `${detailDiagnosis!.name}.jpg`,
+            filters: [
+              {
+                name: "JPGE Files",
+                extensions: ["jpg"],
+              },
+              {
+                name: "All Files",
+                extensions: ["*"],
+              },
+            ],
+          });
+
+          if (result !== null) {
+            const response = await fetch(blob);
+            const buffer = await response.arrayBuffer();
+            const uint8Array = new Uint8Array(buffer);
+            await window.__TAURI__.fs.writeBinaryFile(result, uint8Array);
+            showToast(Locale.Download.Success);
+          } else {
+            showToast(Locale.Download.Failed);
+          }
+        } else {
+          showImageModal(blob);
+        }
+      } else {
+        const link = document.createElement("a");
+        link.download = `${detailDiagnosis!.name}.jpg`;
+        link.href = blob;
+        link.click();
+        if (dom)
+          dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
+      }
+    } catch (error) {
+      showToast(Locale.Download.Failed);
+    }
+  }
 
   function DetailModal(props: { onClose: () => void }) {
-    const diagnosis = diagnosisList[detailId];
     return (
       <div className="modal-mask">
         <Modal
@@ -37,19 +89,30 @@ export const DiagnosisList = () => {
           actions={[
             <IconButton
               type="primary"
-              text={Locale.UI.Confirm}
-              icon={<ConfirmIcon />}
-              key="ok"
+              text={Locale.UI.Export + "为txt"}
+              key="exportastxt"
               onClick={() => {
-                props.onClose();
+                if (!detailDiagnosis) return;
+                downloadAs(detailDiagnosis.name + detailDiagnosis.content + detailDiagnosis.date, "txt")
+              }}
+            />,
+            <IconButton
+              type="primary"
+              text={Locale.UI.Export + "为图片"}
+              key="exportasimage"
+              onClick={() => {
+                if (!detailDiagnosis) return;
+                const dom = previewRef.current;
+                if (!dom) return;
+                downLoadAsJpeg(dom);
               }}
             />,
           ]}
         >
-          <div>
-              {diagnosis.name}
-              {diagnosis.content}
-              {diagnosis.date}
+          <div ref={previewRef}>
+              {detailDiagnosis?.name}
+              {detailDiagnosis?.content}
+              {detailDiagnosis?.date}
           </div>
         </Modal>
       </div>
@@ -118,7 +181,7 @@ export const DiagnosisList = () => {
                 className={styles["mask-item"]}
                 key={item.id}
                 onClick={() => {
-                  setDetailId(item.id);
+                  setDetailDiagnosis(item);
                   setShowDetail(true);
                 }}
                 style={{ cursor: "pointer" }}
