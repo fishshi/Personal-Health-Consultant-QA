@@ -8,6 +8,7 @@ export const YUN_BASE_URL_1 = "http://36.103.203.203:21702";
 export const YUN_BASE_URL_2 = "http://";
 
 export const ollamaModels : string[] = [
+  "llama3.2-vision",
   "llama3.1"
 ]
 
@@ -18,13 +19,13 @@ export const yunModels2 : string[] = [
 ]
 
 export const KnowledgeCutOffDate: Record<string, string> = {
-  default: "2023-12", // llama3.1
+  default: "2023-12", // llama3.1 and llama3.2-vision
   "modelName" : "cutOffDate"
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`;
 export const DEFAULT_SYSTEM_TEMPLATE = `
-  You are MedCu, created by 张远天. You are a helpful medical assistant.
+  你是小医,一个私人健康顾问,你的任务是为用户提供最专业的健康咨询服务。
 `;
 
 export const CACHE_URL_PREFIX = "/api/cache";
@@ -36,6 +37,7 @@ export enum Path {
   Settings = "/settings",
   Artifacts = "/artifacts",
   SearchChat = "/search-chat",
+  DiagnosisList = "/diagnosis-list"
 }
 
 export enum ApiPath {
@@ -56,6 +58,7 @@ export enum StoreKey {
   Mask = "mask-store",
   Prompt = "prompt-store",
   Update = "chat-update",
+  DiagnosisList = "diagnosis-list"
 }
 
 export const DEFAULT_SIDEBAR_WIDTH = 300;

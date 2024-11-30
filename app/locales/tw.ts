@@ -52,7 +52,7 @@ const tw = {
       },
       Prompt: "快捷指令",
       Masks: "所有角色範本",
-      Clear: "清除聊天",
+      Clear: "清除上下文",
       Settings: "對話設定",
       UploadImage: "上傳圖片",
     },
@@ -278,6 +278,9 @@ const tw = {
       Title: "頻率懲罰度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重複字詞",
     },
+  },
+  DiagnosisList: {
+    Title: "診斷清單",
   },
   Store: {
     DefaultTopic: "新的對話",

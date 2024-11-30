@@ -54,7 +54,7 @@ const cn = {
       },
       Prompt: "快捷指令",
       Masks: "所有面具",
-      Clear: "清除聊天",
+      Clear: "清除上下文",
       Settings: "对话设置",
       UploadImage: "上传图片",
     },
@@ -289,6 +289,9 @@ const cn = {
       Title: "频率惩罚度 (frequency_penalty)",
       SubTitle: "值越大，越有可能降低重复字词",
     },
+  },
+  DiagnosisList: {
+    Title: "病历列表",
   },
   Store: {
     DefaultTopic: "新的聊天",

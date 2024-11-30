@@ -296,6 +296,9 @@ const en: LocaleType = {
         "A larger value decreasing the likelihood to repeat the same line",
     },
   },
+  DiagnosisList: {
+    Title: "DiagnosisList",
+  },
   Store: {
     DefaultTopic: "New Conversation",
     BotHello: "Hello! How can I assist you today?",

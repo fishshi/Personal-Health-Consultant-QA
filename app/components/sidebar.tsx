@@ -9,6 +9,7 @@ import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
+import FolderIcon from "../icons/folder.svg";
 
 import Locale from "../locales";
 
@@ -270,6 +271,15 @@ export function SideBar(props: { className?: string }) {
                 <IconButton
                   aria={Locale.Settings.Title}
                   icon={<SettingsIcon />}
+                  shadow
+                />
+              </Link>
+            </div>
+            <div className={styles["sidebar-action"]}>
+              <Link to={Path.DiagnosisList}>
+                <IconButton
+                  aria={Locale.DiagnosisList.Title}
+                  icon={<FolderIcon />}
                   shadow
                 />
               </Link>

@@ -652,7 +652,7 @@ export function DeleteImageButton(props: { deleteImage: () => void }) {
   );
 }
 
-export function ShortcutKeyModal(props: { onClose: () => void }) {
+function ShortcutKeyModal(props: { onClose: () => void }) {
   const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
   const shortcuts = [
     {
