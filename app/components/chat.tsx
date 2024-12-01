@@ -13,6 +13,7 @@ import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
 import ExportIcon from "../icons/share.svg";
+import DiagnosisIcon from "../icons/diagnosis.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -46,6 +47,7 @@ import {
   Theme,
   useAppConfig,
   DEFAULT_TOPIC,
+  useDiagnosisList,
 } from "../store";
 
 import {
@@ -435,7 +437,6 @@ export function ChatActions(props: {
   uploading: boolean;
   setShowShortcutKeyModal: React.Dispatch<React.SetStateAction<boolean>>;
   setUserInput: (input: string) => void;
-  setShowChatSidePanel: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const config = useAppConfig();
   const chatStore = useChatStore();
@@ -1322,7 +1323,7 @@ function _Chat() {
     };
   }, [messages, chatStore, navigate]);
 
-  const [showChatSidePanel, setShowChatSidePanel] = useState(false);
+  const summarizeChatAsDiagnosis = useDiagnosisList().summarizeChatAsDiagnosis;
 
   return (
     <>
@@ -1380,6 +1381,16 @@ function _Chat() {
                 />
               </div>
             )}
+            <div className="window-action-button">
+              <IconButton
+                icon={<DiagnosisIcon />}
+                bordered
+                title={"生成诊断"}
+                onClick={() => {
+                  summarizeChatAsDiagnosis(session.messages)
+                }}
+              />
+            </div>
             <div className="window-action-button">
               <IconButton
                 icon={<ExportIcon />}
@@ -1673,7 +1684,6 @@ function _Chat() {
                 }}
                 setShowShortcutKeyModal={setShowShortcutKeyModal}
                 setUserInput={setUserInput}
-                setShowChatSidePanel={setShowChatSidePanel}
               />
               <label
                 className={clsx(styles["chat-input-panel-inner"], {

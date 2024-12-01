@@ -5,6 +5,7 @@ import { IconButton } from "./button";
 import styles from "./mask.module.scss";
 
 import ClearIcon from "../icons/clear.svg";
+import LoadingIcon from "../icons/loading.svg";
 
 import Locale from "../locales";
 import { Path } from "../constant";
@@ -17,6 +18,7 @@ import { Modal, showImageModal, showToast } from "./ui-lib";
 import { downloadAs, useMobileScreen } from "../utils";
 import { toJpeg } from "html-to-image";
 import { getClientConfig } from "../config/client";
+import dynamic from "next/dynamic";
 
 export const DiagnosisList = () => {
   const navigate = useNavigate();
@@ -33,6 +35,14 @@ export const DiagnosisList = () => {
 
   const [showDetail, setShowDetail] = useState(false);
   const [detailDiagnosis, setDetailDiagnosis] = useState<Diagnosis | null>(null);
+
+  const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
+    loading: () => <LoadingIcon />,
+  });
+
+  const formatToMarkdown = (diagnosis: Diagnosis) => {
+    return "### 诊断\n" + diagnosis?.name + "\n### 注意事项\n" + diagnosis?.content + "\n\n诊断时间：" + diagnosis?.date
+  }
 
   const downLoadAsJpeg = async (dom: HTMLDivElement) => {
     try {
@@ -93,7 +103,7 @@ export const DiagnosisList = () => {
               key="exportastxt"
               onClick={() => {
                 if (!detailDiagnosis) return;
-                downloadAs(detailDiagnosis.name + detailDiagnosis.content + detailDiagnosis.date, "txt")
+                downloadAs(formatToMarkdown(detailDiagnosis), "txt")
               }}
             />,
             <IconButton
@@ -110,9 +120,9 @@ export const DiagnosisList = () => {
           ]}
         >
           <div ref={previewRef}>
-              {detailDiagnosis?.name}
-              {detailDiagnosis?.content}
-              {detailDiagnosis?.date}
+            <Markdown
+              content = {formatToMarkdown(detailDiagnosis!)}
+            />
           </div>
         </Modal>
       </div>

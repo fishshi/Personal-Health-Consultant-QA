@@ -735,14 +735,6 @@ export const useChatStore = createPersistStore(
     return methods;
   },
   {
-    name: StoreKey.Chat,
-    migrate(persistedState) {
-      const state = persistedState as any;
-      const newState = JSON.parse(
-        JSON.stringify(state),
-      ) as typeof DEFAULT_CHAT_STATE;
-
-      return newState as any;
-    },
+    name: StoreKey.Chat
   },
 );

@@ -3,6 +3,9 @@ import { createPersistStore } from "../utils/store";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
+import { ChatMessage, createMessage } from "./chat";
+import { useAppConfig } from "./config";
+import { ClientApi, getClientApi } from "../client/api";
 
 export type Diagnosis = {
   id: number;
@@ -11,17 +14,7 @@ export type Diagnosis = {
   date: string;
 };
 
-const defaultDiagnosis = {"diagnosisList" : [{
-  id: 1,
-  name: "头痛",
-  content: "头痛是由于头部肌肉的疼痛引起的，包括头昏、头晕、头痛、头肿、头部肌肉疼痛等。",
-  date: new Date().toLocaleString()
-}, {
-  id: 2,
-  name: "腰痛",
-  content: "腰痛是由于腰部肌肉的疼痛引起的，包括腰酸、腰背痛、腰腿酸痛、腰痛、腰肌劳损等。",
-  date: new Date().toLocaleString()
-}]};
+const defaultDiagnosis = {"diagnosisList" : [] as Diagnosis[]};
 
 export const useDiagnosisList = createPersistStore(
   {...defaultDiagnosis},
@@ -55,17 +48,54 @@ export const useDiagnosisList = createPersistStore(
         5000,
       );
     },
+
+    summarizeChatAsDiagnosis(chatMessage: ChatMessage[]) {
+      let systemMessage: ChatMessage = createMessage({
+        role: "user",
+        content: "请根据上面的对话，总结用户为用户进行诊断。\n输出格式为：“<病症名称> <注意事项>”。不需要输出尖括号，注意事项中若要分点用换行而不是空格，同时开始和结尾不需要总结句。只能有一个空格在病症名称和注意事项之间。",
+      });
+      let sendMessage = chatMessage.concat([systemMessage]);
+      console.log("[Diagnosis] summarize chat", sendMessage);
+      const config = useAppConfig.getState();
+      const modelConfig = config.modelConfig;
+      const api: ClientApi = getClientApi(modelConfig.providerName);
+      showToast("正在生成诊断，请稍候...");
+      api.llm.chat({
+        messages: sendMessage,
+        config: { ...modelConfig},
+        onFinish(message) {
+          console.log("[Diagnosis] summarize result", message);
+          let messageSplit = message.split(" ");
+          const diagnosis : Diagnosis = {
+            id: new Date().getTime(),
+            name: messageSplit[0],
+            content: messageSplit[1],
+            date: new Date().toLocaleString()
+          }
+          let currDiagnosisList = get().diagnosisList
+          set(() => ({
+            diagnosisList: [...currDiagnosisList, diagnosis],
+          }));
+          showToast(
+            "生成诊断成功",
+            {
+              text: Locale.Home.Revert,
+              onClick() {
+                set(() => ({
+                  diagnosisList: currDiagnosisList,
+                }));
+              },
+            },
+            5000,
+          );
+        },
+        onError(error) {
+          console.error("[Diagnosis] summarize failed", error);
+        },
+      });
+    }
   }),
   {
-    name: StoreKey.DiagnosisList,
-    merge(persistedState, currentState) {
-      const state = persistedState as Diagnosis[] | undefined;
-      if (!state) return { ...currentState };
-      return {...currentState, diagnosisList: [...state]}; // 合并持久化状态和当前状态
-    },
-    migrate(persistedState) {
-      const state = persistedState as Diagnosis[]; // 迁移逻辑
-      return state as any;
-    },
+    name: StoreKey.DiagnosisList
   },
 );
