@@ -223,7 +223,7 @@ const cn = {
 
       LocalState: "本地数据",
       Overview: (overview: any) => {
-        return `${overview.chat} 次对话，${overview.message} 条消息，${overview.prompt} 条提示词，${overview.mask} 个面具`;
+        return `${overview?.chat} 次对话，${overview?.message} 条消息，${overview?.prompt} 条提问模板，${overview?.diagnosis} 个诊断`;
       },
       ImportFailed: "导入失败",
     },
@@ -242,17 +242,17 @@ const cn = {
         Title: "禁用提问模板",
         SubTitle: "在输入框开头输入 / 即可触发提问模板",
       },
-      List: "自定义提示词列表",
+      List: "自定义提问模板列表",
       ListCount: (builtin: number, custom: number) =>
         `内置 ${builtin} 条，用户定义 ${custom} 条`,
       Edit: "编辑",
       Modal: {
-        Title: "提示词列表",
+        Title: "提问模板列表",
         Add: "新建",
-        Search: "搜索提示词",
+        Search: "搜索模板",
       },
       EditModal: {
-        Title: "编辑提示词",
+        Title: "编辑提问模板",
       },
     },
     HistoryCount: {
@@ -314,7 +314,7 @@ const cn = {
     Failed: "下载失败。",
   },
   Context: {
-    Toast: (x: any) => `包含 ${x} 条预设提示词`,
+    Toast: (x: any) => `包含 ${x} 条预设提示模板`,
     Edit: "当前对话设置",
     Add: "新增一条对话",
     Clear: "上下文已清除",

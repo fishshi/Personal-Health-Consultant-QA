@@ -212,7 +212,7 @@ const tw = {
 
       LocalState: "本機資料",
       Overview: (overview: any) => {
-        return `${overview.chat} 次對話，${overview.message} 則訊息，${overview.prompt} 條提示詞，${overview.mask} 個角色範本`;
+        return `${overview.chat} 次對話，${overview.message} 則訊息，${overview.prompt} 條提示詞，${overview.diagnosis} 個诊断`;
       },
       ImportFailed: "匯入失敗",
     },

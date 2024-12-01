@@ -180,6 +180,10 @@ export const useChatStore = createPersistStore(
     }
 
     const methods = {
+      syncSessions(sessions: ChatSession[]) {
+        set(() => ({sessions: sessions}));
+      },
+
       forkSession() {
         // 获取当前会话
         const currentSession = get().currentSession();

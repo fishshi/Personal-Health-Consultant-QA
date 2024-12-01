@@ -45,6 +45,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarPicker } from "./emoji";
 import { getClientConfig } from "../config/client";
 import { nanoid } from "nanoid";
+import { SYNC_CONFIG } from "./sync-config";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -517,6 +518,8 @@ export function Settings() {
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
+
+        <SYNC_CONFIG />
 
         <DangerItems />
       </div>

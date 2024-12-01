@@ -55,6 +55,13 @@ export const usePromptStore = createPersistStore(
   },
 
   (set, get) => ({
+    syncPrompts(prompts: Record<string, Prompt>) {
+      set(() => ({
+        prompts: prompts,
+        counter: Object.keys(prompts).length
+      }));
+    },
+
     add(prompt: Prompt) {
       const prompts = get().prompts;
       prompt.id = nanoid();
@@ -64,6 +71,7 @@ export const usePromptStore = createPersistStore(
 
       set(() => ({
         prompts: prompts,
+        counter: get().counter + 1,
       }));
 
       return prompt.id!;
@@ -95,7 +103,7 @@ export const usePromptStore = createPersistStore(
 
       set(() => ({
         prompts,
-        counter: get().counter + 1,
+        counter: get().counter - 1,
       }));
     },
 

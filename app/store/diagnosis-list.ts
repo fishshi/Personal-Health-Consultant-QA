@@ -23,6 +23,10 @@ export const useDiagnosisList = createPersistStore(
       set(() => ({...defaultDiagnosis}));
     },
 
+    syncDiagnosisList(diagnosisList: Diagnosis[]) {
+      set(() => ({diagnosisList: diagnosisList}));
+    },
+
     addDiagnosis(newDiagnosis: Diagnosis) {
       const currentList = get().diagnosisList;
       set(() => ({

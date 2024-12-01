@@ -226,7 +226,7 @@ const en: LocaleType = {
 
       LocalState: "Local Data",
       Overview: (overview: any) => {
-        return `${overview.chat} chats，${overview.message} messages，${overview.prompt} prompts，${overview.mask} masks`;
+        return `${overview.chat} chats，${overview.message} messages，${overview.prompt} prompts，${overview.diagnosis} diagnosis`;
       },
       ImportFailed: "Failed to import from file",
     },
