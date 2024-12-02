@@ -58,7 +58,8 @@ export enum StoreKey {
   Mask = "mask-store",
   Prompt = "prompt-store",
   Update = "chat-update",
-  DiagnosisList = "diagnosis-list"
+  DiagnosisList = "diagnosis-list",
+  Sync = "sync-store"
 }
 
 export const DEFAULT_SIDEBAR_WIDTH = 300;
