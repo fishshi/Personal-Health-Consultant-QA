@@ -1,5 +1,5 @@
 import { IconButton } from "./button";
-import { List, ListItem, Modal, showToast } from "./ui-lib";
+import { EmailInput, List, ListItem, Modal, PasswordInput, showToast } from "./ui-lib";
 import Locale from "../locales";
 
 import DownloadIcon from "../icons/download.svg";
@@ -34,13 +34,13 @@ export const SYNC_CONFIG = () => {
     };
   }, [chatStore.sessions, diagnosisStore.diagnosisList, promptStore.counter]);
 
-  const remoteExportData = async () => {
+  const remoteExportData = () => {
     const data : SyncData = {session: chatStore.sessions, prompt: promptStore.prompts, diagnosisList: diagnosisStore.diagnosisList}
     syncStore.sync(data);
   }
 
   const remoteImportData = async () => {
-    const rawContent = syncStore.getRemoteData();
+    const rawContent = await syncStore.getRemoteData();
     if (!rawContent) return;
 
     try {
@@ -76,6 +76,9 @@ export const SYNC_CONFIG = () => {
   };
 
   const LoginModal = (props: { onClose: () => void }) => {
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [confirmPassword, setConfirmPassword] = React.useState("");
 
     if (isLogin) {
       return (
@@ -83,7 +86,52 @@ export const SYNC_CONFIG = () => {
           <Modal
             title={"登录"}
             onClose={props.onClose}
+            actions={[
+              <IconButton
+                type="primary"
+                text={"登录"}
+                key="login"
+                onClick={async () => {
+                  if (email === "" || password === "") return;
+                  if (email.indexOf("@") === -1) {
+                    showToast("请输入正确的邮箱");
+                    return;
+                  }
+                  try {
+                    await syncStore.login(email, password);
+                  } catch (e) {return;}
+                  setLogin(true);
+                  props.onClose();
+                }}
+              />,
+              <IconButton
+                type="primary"
+                text={"去注册"}
+                key="go-register"
+                onClick={() => {
+                  setIsLogin(false);
+                }}
+              />,
+            ]}
           >
+          <EmailInput
+            style={{marginLeft: "50%", marginTop: "5%", marginBottom: "5%"}}
+            value={email}
+            type="text"
+            placeholder={"请输入邮箱"}
+            onChange={(e) => {
+              setEmail(e.currentTarget.value);
+            }}
+          />
+          <PasswordInput
+            style={{marginLeft: "50%"}}
+            value={password}
+            type="text"
+            placeholder={"请输入密码"}
+            onChange={(e) => {
+              setPassword(e.currentTarget.value);
+            }}
+          />
           </Modal>
         </div>
       );
@@ -93,7 +141,66 @@ export const SYNC_CONFIG = () => {
         <Modal
           title={"注册"}
           onClose={props.onClose}
+          actions={[
+            <IconButton
+              type="primary"
+              text={"注册"}
+              key="register"
+              onClick={async () => {
+                if (email === "" || password === "") return;
+                if (email.indexOf("@") === -1) {
+                  showToast("请输入正确的邮箱");
+                  return;
+                }
+                if (password !== confirmPassword) {
+                  showToast("两次输入的密码不一致");
+                  return;
+                }
+                try {
+                  await syncStore.register(email, password);
+                } catch (e) {return;}
+                setLogin(true);
+                props.onClose();
+              }}
+            />,
+            <IconButton
+              type="primary"
+              text={"去登录"}
+              key="go-login"
+              onClick={() => {
+                setIsLogin(true);
+              }}
+            />,
+          ]}
         >
+          <EmailInput
+            style={{marginLeft: "50%", marginTop: "5%", marginBottom: "5%"}}
+            value={email}
+            type="text"
+            placeholder={"请输入邮箱"}
+            onChange={(e) => {
+              setEmail(e.currentTarget.value);
+            }}
+          />
+          <PasswordInput
+            style={{marginLeft: "50%"}}
+            value={password}
+            type="text"
+            placeholder={"请输入密码"}
+            onChange={(e) => {
+              setPassword(e.currentTarget.value);
+            }}
+          />
+          <div style={{height: "0px", marginBottom: "2.5%"}}></div>
+          <PasswordInput
+            style={{marginLeft: "50%"}}
+            value={confirmPassword}
+            type="text"
+            placeholder={"请确认密码"}
+            onChange={(e) => {
+              setConfirmPassword(e.currentTarget.value);
+            }}
+          />
         </Modal>
       </div>
     );
@@ -114,7 +221,7 @@ export const SYNC_CONFIG = () => {
         )}
 
         {login && (
-          <ListItem title={"当前账户：" + syncStore.userName}>
+          <ListItem title={"当前账户：" + syncStore.email}>
             <IconButton
               text = {"登出"}
               onClick = {() => {

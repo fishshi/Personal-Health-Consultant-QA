@@ -3,6 +3,8 @@ export const REPO = "PersonalHealthConsultant-QA";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 
+export const SYNC_SERVICE_URL = "http://localhost:8081"
+
 export const OLLAMA_BASE_URL = "http://localhost:11434";
 export const YUN_BASE_URL_1 = "http://36.103.203.203:21702";
 export const YUN_BASE_URL_2 = "http://";
