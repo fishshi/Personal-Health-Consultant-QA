@@ -11,7 +11,7 @@ import { SyncData, useDiagnosisList, useSyncStore } from "../store";
 import { downloadAs, readFromFile } from "../utils";
 import React from "react";
 
-export const SYNC_CONFIG = () => {
+export const SYNC_CONFIG = async () => {
   const chatStore = useChatStore();
   const promptStore = usePromptStore();
   const diagnosisStore = useDiagnosisList();
@@ -36,22 +36,27 @@ export const SYNC_CONFIG = () => {
 
   const remoteExportData = () => {
     const data : SyncData = {session: chatStore.sessions, prompt: promptStore.prompts, diagnosisList: diagnosisStore.diagnosisList}
-    syncStore.sync(data);
+    try {
+      syncStore.sync(data);
+    } catch (e) {
+      showToast("上传失败")
+    }
   }
 
   const remoteImportData = async () => {
-    const rawContent = await syncStore.getRemoteData();
-    if (!rawContent) return;
 
     try {
+      const rawContent = await syncStore.getRemoteData();
+      if (!rawContent) return;
+
       const remoteState : SyncData = JSON.parse(rawContent);
       chatStore.syncSessions(remoteState.session);
       promptStore.syncPrompts(remoteState.prompt);
       diagnosisStore.syncDiagnosisList(remoteState.diagnosisList);
-      showToast("导入成功");
+      showToast("下载成功");
     } catch (e) {
       console.error("[Import]", e);
-      showToast(Locale.Settings.Sync.ImportFailed);
+      showToast("下载失败");
     }
   }
 
@@ -99,7 +104,10 @@ export const SYNC_CONFIG = () => {
                   }
                   try {
                     await syncStore.login(email, password);
-                  } catch (e) {return;}
+                    await syncStore.syncTime();
+                  } catch (e) {
+                    showToast("登录失败");
+                  }
                   setLogin(true);
                   props.onClose();
                 }}
@@ -158,7 +166,11 @@ export const SYNC_CONFIG = () => {
                 }
                 try {
                   await syncStore.register(email, password);
-                } catch (e) {return;}
+                  await syncStore.login(email, password);
+                  await syncStore.syncTime();
+                } catch (e) {
+                  showToast("注册失败");
+                }
                 setLogin(true);
                 props.onClose();
               }}
@@ -241,7 +253,7 @@ export const SYNC_CONFIG = () => {
               <IconButton
                 aria={Locale.UI.Export}
                 icon={<UploadIcon />}
-                text={Locale.UI.Export}
+                text={"上传"}
                 onClick={() => {
                   remoteExportData();
                 }}
@@ -249,7 +261,7 @@ export const SYNC_CONFIG = () => {
               <IconButton
                 aria={Locale.UI.Import}
                 icon={<DownloadIcon />}
-                text={Locale.UI.Import}
+                text={"下载"}
                 onClick={() => {
                   remoteImportData();
                 }}

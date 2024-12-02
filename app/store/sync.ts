@@ -22,48 +22,33 @@ export const useSyncStore = createPersistStore(
   {...defaultSync},
   (set, get) => ({
     login : async (email : string, password : string) => {
-      try {
-        let response = await axios.post(
-          SYNC_SERVICE_URL + "/user/login",
-          {
-            email: email,
-            password: password
-          });
-          if (response.data.code === 1) {
-            set(() => ({
-              email: email,
-              authToken: response.data.data
-            }));
-          } else {
-            showToast(response.data.msg);
-            throw new Error("known");
-          }
-      } catch(error) {
-        if (!(error instanceof Error && error.message === "known"))
-          showToast("登录失败");
-        throw error;
+      let response = await axios.post(
+        SYNC_SERVICE_URL + "/user/login",
+        {
+          email: email,
+          password: password
+        }
+      );
+      if (response.data.code === 1) {
+        set(() => ({
+          email: email,
+          authToken: response.data.data
+        }));
+      } else {
+        showToast(response.data.msg);
       }
     },
 
     register : async (email : string, password : string) => {
-      try {
-        let response = await axios.post(
-          SYNC_SERVICE_URL + "/user/register",
-          {
-            email: email,
-            password: password
-          }
-        )
-        if (response.data.code === 1) {
-          showToast("注册成功");
-        } else {
-          showToast(response.data.msg);
-          throw new Error("known");
+      let response = await axios.post(
+        SYNC_SERVICE_URL + "/user/register",
+        {
+          email: email,
+          password: password
         }
-      } catch(error) {
-        if (!(error instanceof Error && error.message === "known"))
-          showToast("注册失败");
-        throw error;
+      );
+      if (response.data.code !== 1) {
+        showToast(response.data.msg);
       }
     },
 
@@ -73,38 +58,40 @@ export const useSyncStore = createPersistStore(
 
     sync : async (data : SyncData) => {
       const jsonData = JSON.stringify(data);
-      try {
-        let response = await axios.post(
-          SYNC_SERVICE_URL + "/sync/export",
-          {data: jsonData},
-          {headers: {Authorization: `${get().authToken}`}}
-        )
-        if (response.data.code === 1) {
-          set(() => ({lastSyncTime : new Date().toLocaleString()}));
-          showToast("同步成功");
-        } else {
-          showToast(response.data.msg);
-        }
-      } catch (error) {
-        showToast("同步失败");
+
+      let response = await axios.post(
+        SYNC_SERVICE_URL + "/sync/export",
+        {data: jsonData},
+        {headers: {Authorization: `${get().authToken}`}}
+      )
+      if (response.data.code === 1) {
+        set(() => ({lastSyncTime : new Date().toLocaleString()}));
+      } else {
+        showToast(response.data.msg);
       }
     },
 
     getRemoteData : async () => {
-      try {
-        let response = await axios.get(
-          SYNC_SERVICE_URL + "/sync/import",
-          {headers: {Authorization: `${get().authToken}`}}
-        )
-        if (response.data.code === 1) {
-          return response.data.data as string;
-        } else {
-          showToast(response.data.msg);
-        }
-      } catch (error) {
-        showToast("获取云端数据失败");
+      let response = await axios.get(
+        SYNC_SERVICE_URL + "/sync/import",
+        {headers: {Authorization: `${get().authToken}`}}
+      )
+      if (response.data.code === 1) {
+        set(() => ({lastSyncTime: response.data.data.sync_time}))
+        return response.data.data.sync_data as string;
+      } else {
+        showToast(response.data.msg);
       }
     },
+
+    syncTime : async () => {
+      let response = await axios.get(
+        SYNC_SERVICE_URL + "/sync/import",
+        {headers: {Authorization: `${get().authToken}`}}
+      )
+      if (response.data.code === 1)
+        set(() => ({lastSyncTime: response.data.data.sync_time}))
+    }
   }),
   {
     name: StoreKey.Sync,
