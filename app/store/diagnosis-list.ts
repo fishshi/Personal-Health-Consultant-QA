@@ -59,7 +59,7 @@ export const useDiagnosisList = createPersistStore(
       let systemMessage: ChatMessage = createMessage({
         role: "user",
         content:
-          "请根据上面的对话，总结用户为用户进行诊断。\n输出格式为：“<病症名称> <注意事项>”。不需要输出尖括号，注意事项中若要分点用换行而不是空格，同时开始和结尾不需要总结句。只能有一个空格在病症名称和注意事项之间。示例：头疼 注意保持良好的睡眠习惯\n保持饮食均衡\n定期检查身体",
+          "请根据上面的对话，总结用户为用户进行诊断。\n输出格式为：“<病症名称> <注意事项>”。示例：“头疼 注意保持良好的睡眠习惯\n保持饮食均衡\n定期检查身体”。注意：不需要输出尖括号，只能有一个空格在病症名称和注意事项之间，注意事项中若要分点用换行而不是空格，同时开始和结尾不需要总结句。",
       });
       let sendMessage = chatMessage.concat([systemMessage]);
       console.log("[Diagnosis] summarize chat", sendMessage);
@@ -76,7 +76,7 @@ export const useDiagnosisList = createPersistStore(
           const diagnosis: Diagnosis = {
             id: new Date().getTime(),
             name: messageSplit[0],
-            content: messageSplit[1],
+            content: messageSplit.slice(1)?.join(" "),
             date: new Date().toLocaleString(),
           };
           let currDiagnosisList = get().diagnosisList;

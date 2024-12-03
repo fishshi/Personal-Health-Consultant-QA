@@ -6,14 +6,14 @@ export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 export const SYNC_SERVICE_URL = "http://36.103.199.118:8081";
 
 export const OLLAMA_BASE_URL = "http://36.103.199.118:11434";
-export const YUN_BASE_URL_1 = "http://36.103.203.203:21702";
-export const YUN_BASE_URL_2 = "http://";
+export const YUN_BASE_URL_1 = "http://36.103.203.203:20593";
+export const YUN_BASE_URL_2 = "http://36.103.203.203:20981";
 
 export const ollamaModels: string[] = ["llama3.2-vision", "llama3.1"];
 
-export const yunModels1: string[] = [];
+export const yunModels1: string[] = ["./LLM/llm1", "./LLM/llm2"];
 
-export const yunModels2: string[] = [];
+export const yunModels2: string[] = ["./Qwen/Qwen1", "./Qwen/Qwen2"];
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2023-12", // llama3.1 and llama3.2-vision

@@ -18,7 +18,7 @@ import { SyncData, useDiagnosisList, useSyncStore } from "../store";
 import { downloadAs, readFromFile } from "../utils";
 import React from "react";
 
-export const SYNC_CONFIG = async () => {
+export const SYNC_CONFIG = () => {
   const chatStore = useChatStore();
   const promptStore = usePromptStore();
   const diagnosisStore = useDiagnosisList();
