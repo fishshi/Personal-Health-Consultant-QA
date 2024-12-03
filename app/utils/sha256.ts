@@ -1,4 +1,4 @@
-import * as CryptoJS from "crypto-js";
+import CryptoJS from "crypto-js";
 
 const key = "PERSONAL_HEALTH_CONSULTANT_QA_KEY";
 

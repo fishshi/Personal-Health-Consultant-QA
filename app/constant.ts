@@ -3,26 +3,21 @@ export const REPO = "PersonalHealthConsultant-QA";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const ISSUE_URL = `https://github.com/${OWNER}/${REPO}/issues`;
 
-export const SYNC_SERVICE_URL = "http://localhost:8081"
+export const SYNC_SERVICE_URL = "http://36.103.199.118:8081";
 
-export const OLLAMA_BASE_URL = "http://localhost:11434";
+export const OLLAMA_BASE_URL = "http://36.103.199.118:11434";
 export const YUN_BASE_URL_1 = "http://36.103.203.203:21702";
 export const YUN_BASE_URL_2 = "http://";
 
-export const ollamaModels : string[] = [
-  "llama3.2-vision",
-  "llama3.1"
-]
+export const ollamaModels: string[] = ["llama3.2-vision", "llama3.1"];
 
-export const yunModels1 : string[] = [
-]
+export const yunModels1: string[] = [];
 
-export const yunModels2 : string[] = [
-]
+export const yunModels2: string[] = [];
 
 export const KnowledgeCutOffDate: Record<string, string> = {
   default: "2023-12", // llama3.1 and llama3.2-vision
-  "modelName" : "cutOffDate"
+  modelName: "cutOffDate",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`;
@@ -39,7 +34,7 @@ export enum Path {
   Settings = "/settings",
   Artifacts = "/artifacts",
   SearchChat = "/search-chat",
-  DiagnosisList = "/diagnosis-list"
+  DiagnosisList = "/diagnosis-list",
 }
 
 export enum ApiPath {
@@ -61,7 +56,7 @@ export enum StoreKey {
   Prompt = "prompt-store",
   Update = "chat-update",
   DiagnosisList = "diagnosis-list",
-  Sync = "sync-store"
+  Sync = "sync-store",
 }
 
 export const DEFAULT_SIDEBAR_WIDTH = 300;
@@ -92,17 +87,20 @@ export const OpenaiPath = {
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
-  ...ollamaModels.concat(yunModels1).concat(yunModels2).map((name) => ({
-    name,
-    available: true,
-    sorted: seq++, // Global sequence sort(index)
-    provider: {
-      id: "openai",
-      providerName: "OpenAI",
-      providerType: "openai",
-      sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
-    },
-  })),
+  ...ollamaModels
+    .concat(yunModels1)
+    .concat(yunModels2)
+    .map((name) => ({
+      name,
+      available: true,
+      sorted: seq++, // Global sequence sort(index)
+      provider: {
+        id: "openai",
+        providerName: "OpenAI",
+        providerType: "openai",
+        sorted: 1, // 这里是固定的，确保顺序与之前内置的版本一致
+      },
+    })),
 ] as const;
 
 export const CHAT_PAGE_SIZE = 15;

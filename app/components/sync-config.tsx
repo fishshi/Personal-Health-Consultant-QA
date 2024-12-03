@@ -1,5 +1,12 @@
 import { IconButton } from "./button";
-import { EmailInput, List, ListItem, Modal, PasswordInput, showToast } from "./ui-lib";
+import {
+  EmailInput,
+  List,
+  ListItem,
+  Modal,
+  PasswordInput,
+  showToast,
+} from "./ui-lib";
 import Locale from "../locales";
 
 import DownloadIcon from "../icons/download.svg";
@@ -30,39 +37,49 @@ export const SYNC_CONFIG = async () => {
       chat: sessions.length,
       message: messageCount,
       prompt: promptStore.counter,
-      diagnosis: diagnosisCount
+      diagnosis: diagnosisCount,
     };
   }, [chatStore.sessions, diagnosisStore.diagnosisList, promptStore.counter]);
 
   const remoteExportData = () => {
-    const data : SyncData = {session: chatStore.sessions, prompt: promptStore.prompts, diagnosisList: diagnosisStore.diagnosisList}
+    const data: SyncData = {
+      session: chatStore.sessions,
+      prompt: promptStore.prompts,
+      diagnosisList: diagnosisStore.diagnosisList,
+    };
     try {
       syncStore.sync(data);
     } catch (e) {
-      showToast("上传失败")
+      if (!(e instanceof Error) || e.message !== "known") showToast("上传失败");
     }
-  }
+  };
 
   const remoteImportData = async () => {
-
     try {
       const rawContent = await syncStore.getRemoteData();
       if (!rawContent) return;
 
-      const remoteState : SyncData = JSON.parse(rawContent);
+      const remoteState: SyncData = JSON.parse(rawContent);
       chatStore.syncSessions(remoteState.session);
       promptStore.syncPrompts(remoteState.prompt);
       diagnosisStore.syncDiagnosisList(remoteState.diagnosisList);
       showToast("下载成功");
     } catch (e) {
+      if (!(e instanceof Error) || e.message !== "known") showToast("下载失败");
       console.error("[Import]", e);
-      showToast("下载失败");
     }
-  }
+  };
 
   const exportData = async () => {
-    const data : SyncData = {session: chatStore.sessions, prompt: promptStore.prompts, diagnosisList: diagnosisStore.diagnosisList}
-    downloadAs(JSON.stringify(data), `Backup-${new Date().toLocaleString()}.json`);
+    const data: SyncData = {
+      session: chatStore.sessions,
+      prompt: promptStore.prompts,
+      diagnosisList: diagnosisStore.diagnosisList,
+    };
+    downloadAs(
+      JSON.stringify(data),
+      `Backup-${new Date().toLocaleString()}.json`,
+    );
   };
 
   const importData = async () => {
@@ -105,11 +122,12 @@ export const SYNC_CONFIG = async () => {
                   try {
                     await syncStore.login(email, password);
                     await syncStore.syncTime();
+                    setLogin(true);
+                    props.onClose();
                   } catch (e) {
-                    showToast("登录失败");
+                    if (!(e instanceof Error) || e.message !== "known")
+                      showToast("登录失败");
                   }
-                  setLogin(true);
-                  props.onClose();
                 }}
               />,
               <IconButton
@@ -122,24 +140,24 @@ export const SYNC_CONFIG = async () => {
               />,
             ]}
           >
-          <EmailInput
-            style={{marginLeft: "50%", marginTop: "5%", marginBottom: "5%"}}
-            value={email}
-            type="text"
-            placeholder={"请输入邮箱"}
-            onChange={(e) => {
-              setEmail(e.currentTarget.value);
-            }}
-          />
-          <PasswordInput
-            style={{marginLeft: "50%"}}
-            value={password}
-            type="text"
-            placeholder={"请输入密码"}
-            onChange={(e) => {
-              setPassword(e.currentTarget.value);
-            }}
-          />
+            <EmailInput
+              style={{ marginLeft: "50%", marginTop: "5%", marginBottom: "5%" }}
+              value={email}
+              type="text"
+              placeholder={"请输入邮箱"}
+              onChange={(e) => {
+                setEmail(e.currentTarget.value);
+              }}
+            />
+            <PasswordInput
+              style={{ marginLeft: "50%" }}
+              value={password}
+              type="text"
+              placeholder={"请输入密码"}
+              onChange={(e) => {
+                setPassword(e.currentTarget.value);
+              }}
+            />
           </Modal>
         </div>
       );
@@ -168,11 +186,12 @@ export const SYNC_CONFIG = async () => {
                   await syncStore.register(email, password);
                   await syncStore.login(email, password);
                   await syncStore.syncTime();
+                  setLogin(true);
+                  props.onClose();
                 } catch (e) {
-                  showToast("注册失败");
+                  if (!(e instanceof Error) || e.message !== "known")
+                    showToast("注册失败");
                 }
-                setLogin(true);
-                props.onClose();
               }}
             />,
             <IconButton
@@ -186,7 +205,7 @@ export const SYNC_CONFIG = async () => {
           ]}
         >
           <EmailInput
-            style={{marginLeft: "50%", marginTop: "5%", marginBottom: "5%"}}
+            style={{ marginLeft: "50%", marginTop: "5%", marginBottom: "5%" }}
             value={email}
             type="text"
             placeholder={"请输入邮箱"}
@@ -195,7 +214,7 @@ export const SYNC_CONFIG = async () => {
             }}
           />
           <PasswordInput
-            style={{marginLeft: "50%"}}
+            style={{ marginLeft: "50%" }}
             value={password}
             type="text"
             placeholder={"请输入密码"}
@@ -203,9 +222,9 @@ export const SYNC_CONFIG = async () => {
               setPassword(e.currentTarget.value);
             }}
           />
-          <div style={{height: "0px", marginBottom: "2.5%"}}></div>
+          <div style={{ height: "0px", marginBottom: "2.5%" }}></div>
           <PasswordInput
-            style={{marginLeft: "50%"}}
+            style={{ marginLeft: "50%" }}
             value={confirmPassword}
             type="text"
             placeholder={"请确认密码"}
@@ -216,7 +235,7 @@ export const SYNC_CONFIG = async () => {
         </Modal>
       </div>
     );
-  }
+  };
 
   return (
     <>
@@ -229,25 +248,29 @@ export const SYNC_CONFIG = async () => {
                 setShowLogin(true);
               }}
             />
-          </ ListItem>
+          </ListItem>
         )}
 
         {login && (
           <ListItem title={"当前账户：" + syncStore.email}>
             <IconButton
-              text = {"登出"}
-              onClick = {() => {
+              text={"登出"}
+              onClick={() => {
                 syncStore.logout();
                 setLogin(false);
               }}
             />
-          </ ListItem>
+          </ListItem>
         )}
 
         {login && (
           <ListItem
             title={Locale.Settings.Sync.CloudState}
-            subTitle={ syncStore.lastSyncTime === "" ? Locale.Settings.Sync.NotSyncYet : "已于" + syncStore.lastSyncTime + "同步"}
+            subTitle={
+              syncStore.lastSyncTime === ""
+                ? Locale.Settings.Sync.NotSyncYet
+                : "已于" + syncStore.lastSyncTime + "同步"
+            }
           >
             <div style={{ display: "flex" }}>
               <IconButton
@@ -297,4 +320,4 @@ export const SYNC_CONFIG = async () => {
       {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
     </>
   );
-}
+};

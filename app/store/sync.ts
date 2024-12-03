@@ -34,6 +34,7 @@ export const useSyncStore = createPersistStore(
         }));
       } else {
         showToast(response.data.msg);
+        throw new Error("known");
       }
     },
 
@@ -44,6 +45,7 @@ export const useSyncStore = createPersistStore(
       });
       if (response.data.code !== 1) {
         showToast(response.data.msg);
+        throw new Error("known");
       }
     },
 
@@ -63,6 +65,7 @@ export const useSyncStore = createPersistStore(
         set(() => ({ lastSyncTime: new Date().toLocaleString() }));
       } else {
         showToast(response.data.msg);
+        throw new Error("known");
       }
     },
 
@@ -75,6 +78,7 @@ export const useSyncStore = createPersistStore(
         return response.data.data.sync_data as string;
       } else {
         showToast(response.data.msg);
+        throw new Error("known");
       }
     },
 
