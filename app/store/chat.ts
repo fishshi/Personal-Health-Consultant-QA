@@ -25,6 +25,7 @@ import { createPersistStore } from "../utils/store";
 import { estimateTokenLength } from "../utils/token";
 import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { createEmptyMask, Mask } from "./mask";
+import { Diagnosis, useDiagnosisList } from "./diagnosis-list";
 
 const localStorage = safeLocalStorage();
 
@@ -181,7 +182,7 @@ export const useChatStore = createPersistStore(
 
     const methods = {
       syncSessions(sessions: ChatSession[]) {
-        set(() => ({sessions: sessions}));
+        set(() => ({ sessions: sessions }));
       },
 
       forkSession() {
@@ -254,7 +255,7 @@ export const useChatStore = createPersistStore(
           session.mask = {
             ...mask,
             modelConfig: {
-              ...globalModelConfig
+              ...globalModelConfig,
             },
           };
           session.topic = mask.name;
@@ -502,6 +503,19 @@ export const useChatStore = createPersistStore(
             systemPrompts.at(0)?.content ?? "empty",
           );
         }
+
+        const diagnosisList: Diagnosis[] =
+          useDiagnosisList.getState().diagnosisList;
+        let diagnosisNameList: string = "";
+        for (let i = 0; i < diagnosisList.length; i++)
+          diagnosisNameList += diagnosisList[i].name + " ";
+        const diagnosisPrompt = createMessage({
+          role: "system",
+          content:
+            "用户病历：" +
+            (diagnosisNameList === "" ? "无" : diagnosisNameList),
+        });
+
         const memoryPrompt = get().getMemoryPrompt();
         // long term memory
         const shouldSendLongTermMemory =
@@ -547,6 +561,7 @@ export const useChatStore = createPersistStore(
         // concat all messages
         const recentMessages = [
           ...systemPrompts,
+          diagnosisPrompt,
           ...longTermMemoryPrompts,
           ...contextPrompts,
           ...reversedRecentMessages.reverse(),
@@ -739,6 +754,6 @@ export const useChatStore = createPersistStore(
     return methods;
   },
   {
-    name: StoreKey.Chat
+    name: StoreKey.Chat,
   },
 );
