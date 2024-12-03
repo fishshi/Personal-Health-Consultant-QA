@@ -34,21 +34,30 @@ export const DiagnosisList = () => {
   const [searchResults, setSearchResults] = useState<Diagnosis[]>([]);
 
   const [showDetail, setShowDetail] = useState(false);
-  const [detailDiagnosis, setDetailDiagnosis] = useState<Diagnosis | null>(null);
+  const [detailDiagnosis, setDetailDiagnosis] = useState<Diagnosis | null>(
+    null,
+  );
 
   const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
     loading: () => <LoadingIcon />,
   });
 
   const formatToMarkdown = (diagnosis: Diagnosis) => {
-    return "### 诊断\n" + diagnosis?.name + "\n### 注意事项\n" + diagnosis?.content + "\n\n诊断时间：" + diagnosis?.date
-  }
+    return (
+      "### 诊断\n" +
+      diagnosis?.name +
+      "\n### 注意事项\n" +
+      diagnosis?.content +
+      "\n\n诊断时间：" +
+      diagnosis?.date
+    );
+  };
 
   const downLoadAsJpeg = async (dom: HTMLDivElement) => {
     try {
-      const blob = await toJpeg(dom, {backgroundColor: "#fff"});
+      const blob = await toJpeg(dom, { backgroundColor: "#fff" });
       if (!blob) return;
-      
+
       if (isMobile || (isApp && window.__TAURI__)) {
         if (isApp && window.__TAURI__) {
           const result = await window.__TAURI__.dialog.save({
@@ -82,13 +91,12 @@ export const DiagnosisList = () => {
         link.download = `${detailDiagnosis!.name}.jpg`;
         link.href = blob;
         link.click();
-        if (dom)
-          dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
+        if (dom) dom.innerHTML = dom.innerHTML; // Refresh the content of the preview by resetting its HTML for fix a bug glitching
       }
     } catch (error) {
       showToast(Locale.Download.Failed);
     }
-  }
+  };
 
   function DetailModal(props: { onClose: () => void }) {
     return (
@@ -103,7 +111,7 @@ export const DiagnosisList = () => {
               key="exportastxt"
               onClick={() => {
                 if (!detailDiagnosis) return;
-                downloadAs(formatToMarkdown(detailDiagnosis), "txt")
+                downloadAs(formatToMarkdown(detailDiagnosis), "txt");
               }}
             />,
             <IconButton
@@ -120,9 +128,7 @@ export const DiagnosisList = () => {
           ]}
         >
           <div ref={previewRef}>
-            <Markdown
-              content = {formatToMarkdown(detailDiagnosis!)}
-            />
+            <Markdown content={formatToMarkdown(detailDiagnosis!)} />
           </div>
         </Modal>
       </div>
@@ -136,11 +142,12 @@ export const DiagnosisList = () => {
   const doSearch = useCallback((searchText: string) => {
     let results = diagnosisList;
     if (searchText.length > 0) {
-      results = diagnosisList.filter((item : Diagnosis) =>
-        item.name.toLowerCase().includes(searchText.toLowerCase())
-    )}
+      results = diagnosisList.filter((item: Diagnosis) =>
+        item.name.toLowerCase().includes(searchText.toLowerCase()),
+      );
+    }
     return results;
-  },[])
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -184,7 +191,7 @@ export const DiagnosisList = () => {
               }}
             />
           </div>
-            
+
           <div>
             {searchResults.map((item) => (
               <div
@@ -200,7 +207,7 @@ export const DiagnosisList = () => {
                 <div className={styles["mask-header"]}>
                   <div className={styles["mask-title"]}>
                     <div className={styles["mask-name"]}>{item.name}</div>
-                    {item.content.slice(0, 70)}
+                    {item.content?.slice(0, 70)}
                     <div>{item.date}</div>
                   </div>
                 </div>
@@ -220,9 +227,7 @@ export const DiagnosisList = () => {
           </div>
         </div>
       </div>
-      {showDetail && (
-        <DetailModal onClose={() => setShowDetail(false)} />
-      )}
+      {showDetail && <DetailModal onClose={() => setShowDetail(false)} />}
     </ErrorBoundary>
   );
-}
+};
